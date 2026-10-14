@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug / demo console. Tanush's real UI only needs:
+    SosDispatcher.send(SosEvent.create(...)), SosDispatcher.stop(),
+    SafeExit.start(location), RelayService.start(context)
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FAFAFA">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Guardian Relay — debug console"
+                android:textColor="#212121"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDevice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#616161"
+                android:textSize="12sp" />
+
+            <!-- Settings -->
+            <TextView style="@style/Section" android:text="Settings" />
+
+            <EditText
+                android:id="@+id/etBackendUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Backend, e.g. http://192.168.1.5:5000"
+                android:inputType="textUri"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/etContacts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Trusted contacts, comma-separated (+9198…)"
+                android:inputType="phone"
+                android:digits="+0123456789, "
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Your name (shown in SMS)"
+                android:inputType="textPersonName"
+                android:textSize="14sp" />
+
+            <CheckBox
+                android:id="@+id/cbBleAlways"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Always broadcast BLE too (not only as last fallback)"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/btnSave"
+                style="@style/Btn"
+                android:text="Save settings" />
+
+            <!-- Phone A -->
+            <TextView style="@style/Section" android:text="Sender (Phone A)" />
+
+            <Button
+                android:id="@+id/btnTriggerSos"
+                style="@style/Btn"
+                android:backgroundTint="#C62828"
+                android:textColor="#FFFFFF"
+                android:text="TRIGGER SOS  (HTTP → SMS → BLE)" />
+
+            <Button
+                android:id="@+id/btnStopSos"
+                style="@style/Btn"
+                android:text="I'm safe — stop SOS" />
+
+            <LinearLayout style="@style/Row">
+                <Button
+                    android:id="@+id/btnSimHigh"
+                    style="@style/RowBtn"
+                    android:text="Sim: followed (HIGH)" />
+                <Button
+                    android:id="@+id/btnSimMedium"
+                    style="@style/RowBtn"
+                    android:text="Sim: uneasy (MED)" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnSafeExit"
+                style="@style/Btn"
+                android:backgroundTint="#2E7D32"
+                android:textColor="#FFFFFF"
+                android:text="SAFE EXIT  (walk to nearest open safe place)" />
+
+            <!-- Phone B -->
+            <TextView style="@style/Section" android:text="Relay (Phone B)" />
+
+            <LinearLayout style="@style/Row">
+                <Button
+                    android:id="@+id/btnStartRelay"
+                    style="@style/RowBtn"
+                    android:text="Start relay" />
+                <Button
+                    android:id="@+id/btnStopRelay"
+                    style="@style/RowBtn"
+                    android:text="Stop relay" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnRawScan"
+                style="@style/Btn"
+                android:text="Raw scan test (no filter, keep screen on)" />
+
+            <!-- Diagnostics -->
+            <TextView style="@style/Section" android:text="Diagnostics &amp; fixes" />
+
+            <Button
+                android:id="@+id/btnDiagnostics"
+                style="@style/Btn"
+                android:text="Run diagnostics" />
+
+            <LinearLayout style="@style/Row">
+                <Button
+                    android:id="@+id/btnPermissions"
+                    style="@style/RowBtn"
+                    android:text="Permissions" />
+                <Button
+                    android:id="@+id/btnAppSettings"
+                    style="@style/RowBtn"
+                    android:text="App settings" />
+                <Button
+                    android:id="@+id/btnEnableBt"
+                    style="@style/RowBtn"
+                    android:text="Bluetooth" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/Row">
+                <Button
+                    android:id="@+id/btnFixBattery"
+                    style="@style/RowBtn"
+                    android:text="Fix: battery" />
+                <Button
+                    android:id="@+id/btnFixOem"
+                    style="@style/RowBtn"
+                    android:text="Fix: OEM" />
+                <Button
+                    android:id="@+id/btnLocationSettings"
+                    style="@style/RowBtn"
+                    android:text="Location" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#263238"
+        android:fontFamily="monospace"
+        android:padding="8dp"
+        android:textColor="#FFFFFF"
+        android:textSize="11sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#111111"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="8dp"
+            android:text="Event log"
+            android:textColor="#9E9E9E"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnCopyLog"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Copy"
+            android:textColor="#80CBC4"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnClearLog"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Clear"
+            android:textColor="#80CBC4"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/svLog"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#111111">
+
+        <TextView
+            android:id="@+id/tvLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:padding="8dp"
+            android:textColor="#E0E0E0"
+            android:textIsSelectable="true"
+            android:textSize="11sp" />
+    </ScrollView>
+</LinearLayout>

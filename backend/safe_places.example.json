@@ -1,0 +1,26 @@
+[
+  {
+    "id": "example-1",
+    "name": "EXAMPLE Police Station — replace with a real, verified place",
+    "type": "police",
+    "lat": 26.2183,
+    "lng": 78.1828,
+    "hours": "24/7"
+  },
+  {
+    "id": "example-2",
+    "name": "EXAMPLE Pharmacy — replace me",
+    "type": "pharmacy",
+    "lat": 26.2201,
+    "lng": 78.1855,
+    "hours": { "daily": [["08:00", "23:00"]] }
+  },
+  {
+    "id": "example-3",
+    "name": "EXAMPLE Restaurant (overnight hours) — replace me",
+    "type": "restaurant",
+    "lat": 26.2160,
+    "lng": 78.1800,
+    "hours": { "mon": [["12:00", "15:30"], ["19:00", "01:00"]], "sat": [["12:00", "02:00"]] }
+  }
+]
