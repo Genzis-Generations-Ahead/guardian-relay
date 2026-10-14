@@ -1,6 +1,26 @@
 <resources>
-    <!-- Framework theme: the core has no AndroidX/Material dependency. -->
+    <!-- Framework theme: the core has no AndroidX/Material dependency.
+         Compose draws its own Material 3 surfaces on top of this, so it stays the base
+         theme for every activity — including the untouched v0.2 debug console. -->
     <style name="Theme.GuardianRelay" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- LaunchActivity has no UI: it routes to the calculator lock or to the app.
+         A translucent, animation-free window means no white flash on the way through. -->
+    <style name="Theme.Guardian.Launch" parent="android:Theme.Translucent.NoTitleBar">
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoDisplay">false</item>
+    </style>
+
+    <!-- Public Deterrent Mode: edge-to-edge red, no title, and black animations so the
+         screen snaps to red instead of fading in. -->
+    <style name="Theme.Guardian.Deterrent" parent="android:Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">#B3001F</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:navigationBarColor">#B3001F</item>
+        <item name="android:statusBarColor">#B3001F</item>
+    </style>
 
     <style name="Section">
         <item name="android:layout_width">wrap_content</item>

@@ -5,6 +5,8 @@
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
     <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
 
     <!-- ── Bluetooth, Android ≤ 11 (API 30) ── -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
@@ -29,12 +31,21 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
 
-    <!-- ── Foreground services (keep BLE + location alive on MIUI / One UI) ── -->
+    <!-- ── Foreground services (keep BLE + location + hardware triggers alive on MIUI / One UI) ── -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <!-- specialUse: the hardware-trigger listener (power button / shake / volume keys). It fits no
+         other Android 14 FGS type; the subtype property below is the declaration Google asks for. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- ── Public Deterrent Mode: loud alarm, vibration, screen wake ── -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <!-- usesCleartextTraffic: the demo backend is plain http:// on the LAN. With
          targetSdk 34 Android blocks that by default and Phone B's forward fails.
@@ -47,16 +58,57 @@
         android:theme="@style/Theme.GuardianRelay"
         android:usesCleartextTraffic="true">
 
+        <!-- ───────────── Entry point ─────────────
+             LaunchActivity has no UI. It decides, in onCreate, whether to show the
+             calculator lock (a PIN is configured) or go straight to the app. -->
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.LaunchActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
+            android:theme="@style/Theme.Guardian.Launch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Main app: navigation host for Home / SOS / Followed / Mesh / Contacts / Settings -->
+        <activity
+            android:name=".ui.HomeActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Duress PIN decoy: a working calculator. The real PIN unlocks the app; the
+             duress PIN silently fires the SOS and keeps calculating. -->
+        <activity
+            android:name=".duress.CalculatorLockActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:label="Calculator"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Public Deterrent Mode: full-screen red alarm. showWhenLocked/turnScreenOn so one
+             gesture works with the phone locked in a pocket. -->
+        <activity
+            android:name=".deterrent.DeterrentActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:showOnLockScreen="true"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Guardian.Deterrent" />
+
+        <!-- Existing two-phone debug console from v0.2. No longer the launcher, but
+             unchanged and still reachable from Settings → "Open debug console". -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".location.LocationService"
@@ -67,6 +119,25 @@
             android:name=".ble.RelayService"
             android:exported="false"
             android:foregroundServiceType="connectedDevice" />
+
+        <service
+            android:name=".trigger.TriggerService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Listens for the hardware panic gesture (power button pressed 3x, shake, or volume up+down) so a user who cannot look at or unlock the phone can still raise an SOS." />
+        </service>
+
+        <receiver
+            android:name=".trigger.BootReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

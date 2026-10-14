@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">Guardian Relay Demo</string>
+    <string name="app_name">Guardian Mesh</string>
+
+    <!-- Public Deterrent Mode. Shown huge, in both languages, so bystanders in an
+         Indian street read at least one of them at a glance. -->
+    <string name="deterrent_title_en">HELP</string>
+    <string name="deterrent_title_hi">मदद करें</string>
+    <string name="deterrent_line_en">HARASSER HERE — CALL 112</string>
+    <string name="deterrent_line_hi">यहाँ उत्पीड़न हो रहा है — 112 पर कॉल करें</string>
 </resources>
