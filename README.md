@@ -416,7 +416,7 @@ notification should appear and Phone B / the dashboard should show the event.
 
 <div align="center">
 
-Built for a hackathon in Jaipur · part of the [Genzis](https://github.com/Genzis-Generations-Ahead) stack
+Part of the [Genzis](https://github.com/Genzis-Generations-Ahead) stack
 
 **If you take one thing from this repo:** the fallback chain, not the UI. Everything else is
 replaceable.
